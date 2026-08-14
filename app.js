@@ -491,3 +491,77 @@ document.addEventListener("keydown",(e)=>{
     unlockManualFromInline();
   }
 });
+
+// ===== CORREÇÃO DEFINITIVA DO MENU MOBILE =====
+(() => {
+  const sidebar = document.getElementById("sidebar");
+  const menuBtn = document.getElementById("mobileMenu");
+  const closeBtn = document.getElementById("sidebarToggle");
+  const menuState = document.getElementById("menuState");
+
+  if (!sidebar || !menuBtn) return;
+
+  function abrirMenu() {
+    if (menuState) menuState.checked = false;
+    sidebar.classList.add("mobile-open");
+    document.body.style.overflow = "hidden";
+  }
+
+  function fecharMenu() {
+    sidebar.classList.remove("mobile-open");
+    if (menuState) menuState.checked = false;
+    document.body.style.overflow = "";
+  }
+
+  menuBtn.addEventListener(
+    "click",
+    (e) => {
+      if (window.innerWidth > 850) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      if (sidebar.classList.contains("mobile-open")) {
+        fecharMenu();
+      } else {
+        abrirMenu();
+      }
+    },
+    true
+  );
+
+  if (closeBtn) {
+    closeBtn.addEventListener(
+      "click",
+      (e) => {
+        if (window.innerWidth <= 850) {
+          e.preventDefault();
+          e.stopPropagation();
+          fecharMenu();
+        }
+      },
+      true
+    );
+  }
+
+  document.querySelectorAll(".nav-item").forEach((item) => {
+    item.addEventListener("click", (e) => {
+      if (window.innerWidth <= 850) {
+        e.preventDefault();
+        e.stopPropagation();
+        fecharMenu();
+      }
+    });
+  });
+
+  document.addEventListener("click", (e) => {
+    if (
+      window.innerWidth <= 850 &&
+      sidebar.classList.contains("mobile-open") &&
+      !sidebar.contains(e.target) &&
+      !menuBtn.contains(e.target)
+    ) {
+      fecharMenu();
+    }
+  });
+})();
